@@ -1,13 +1,8 @@
 import os
-from datasets import load_dataset
 import pandas as pd
+from datasets import load_dataset
 
-train_csv_path = "data/train.csv"
-val_csv_path = "data/val.csv"
-test_csv_path = "data/test.csv"
-labels_csv_path = "data/labels.csv"
-
-def loader():
+def loader(labels_csv_path, train_csv_path, val_csv_path, test_csv_path):
     # Check if the files exist; if not, load from the remote
     # Check if the files exist; if not, load from the remote source
     if not (os.path.exists(train_csv_path) and os.path.exists(val_csv_path) and os.path.exists(test_csv_path) and os.path.exists(labels_csv_path)):

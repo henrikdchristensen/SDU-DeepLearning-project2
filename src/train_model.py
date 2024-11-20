@@ -1,14 +1,22 @@
+import os
+import time
+import numpy as np
+
 from torch import nn
 import torch
 import torch.optim as optim
 import torch.nn.functional as F
-import time
 from torchinfo import summary
-import os
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, f1_score, precision_score, recall_score
-import numpy as np
-from torch.utils.data import DataLoader
-from emotion_dataset import EmotionDataset
+
+from sklearn.metrics import (
+    accuracy_score,
+    f1_score,
+    precision_score,
+    recall_score,
+    classification_report,
+    confusion_matrix,
+)
+
 
 def calculate_accuracy(outputs, targets):
     _, predicted = torch.max(outputs, dim=1)  # Get the index of the highest score (predicted label)
@@ -18,10 +26,8 @@ def calculate_accuracy(outputs, targets):
 def train_model(
     label,
     model,
-    train_data,
-    val_data,
-    train_labels,
-    val_labels,
+    train_loader,
+    val_loader,
     label_mapping,
     device,
     optimizer_type="Adam",
@@ -32,15 +38,8 @@ def train_model(
     gamma=0.5,
     reg_type=None,
     reg_lambda=0.0,
-    num_epochs=30,
-    batch_size=32
-):
-    train_dataset = EmotionDataset(train_data, train_labels)
-    val_dataset = EmotionDataset(val_data, val_labels)
-
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
-    
+    num_epochs=30
+):  
     # Move the model to the device
     model = model.to(device)
 
@@ -145,8 +144,8 @@ def train_model(
 
         epoch_duration = round(time.time() - start_time)
         print(
-            f"Epoch {epoch+1}/{num_epochs} | Train Loss: {train_losses[-1]} (acc. {train_accuracies[-1]}%) | "
-            f"Val Loss: {val_losses[-1]} (acc. {val_accuracies[-1]}%) | Time: {epoch_duration}s"
+            f"Epoch {epoch+1}/{num_epochs} | Train Loss: {train_losses[-1]:.3f} (acc. {train_accuracies[-1]:.1f}%) | "
+            f"Val Loss: {val_losses[-1]:.3f} (acc. {val_accuracies[-1]:.1f}%) | Time: {epoch_duration}s"
         )
 
     total_training_time = round(time.time() - total_start_time)
@@ -183,7 +182,10 @@ def train_model(
     # Save metrics to files
     os.makedirs("results", exist_ok=True)
     with open(f"results/{label}_metrics.txt", "w") as f:
-        f.write(f"Accuracy Score: {accuracy:.4f}\n\n")
+        f.write(f"Accuracy Score: {accuracy:.4f}")
+        f.write(f"F1-Score: {f1:.4f}")
+        f.write(f"Precision: {precision:.4f}")
+        f.write(f"Recall: {recall:.4f}\n\n")
         f.write("Classification Report:\n")
         f.write(class_report + "\n")
         f.write("Confusion Matrix:\n")
