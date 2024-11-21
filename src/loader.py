@@ -2,10 +2,9 @@ import os
 import pandas as pd
 from datasets import load_dataset
 
-def loader(labels_csv_path, train_csv_path, val_csv_path, test_csv_path):
-    # Check if the files exist; if not, load from the remote
+def loader(train_csv_path, val_csv_path, test_csv_path):
     # Check if the files exist; if not, load from the remote source
-    if not (os.path.exists(train_csv_path) and os.path.exists(val_csv_path) and os.path.exists(test_csv_path) and os.path.exists(labels_csv_path)):
+    if not (os.path.exists(train_csv_path) and os.path.exists(val_csv_path) and os.path.exists(test_csv_path)):
         print("Data files not found. Loading dataset from remote source...")
         
         os.makedirs("data", exist_ok=True)
@@ -13,40 +12,35 @@ def loader(labels_csv_path, train_csv_path, val_csv_path, test_csv_path):
         # Load the dataset from Hugging Face
         ds = load_dataset("dair-ai/emotion", "split")
         
+        label_names = ds["train"].features["label"].names
+        
         # Save train data
         train_data = {
             "text": ds["train"]["text"],
-            "label": ds["train"]["label"]
+            "label": ds["train"]["label"],
+            # Convert label indices to label names
+            "label_name": [label_names[label] for label in ds["train"]["label"]]
         }
-        pd.DataFrame(train_data).to_csv(train_csv_path, index=False)
+        pd.DataFrame(train_data).to_csv(train_csv_path, index=True)
         
         # Save validation data
         val_data = {
             "text": ds["validation"]["text"],
-            "label": ds["validation"]["label"]
+            "label": ds["validation"]["label"],
+            "label_name": [label_names[label] for label in ds["validation"]["label"]]
         }
-        pd.DataFrame(val_data).to_csv(val_csv_path, index=False)
+        pd.DataFrame(val_data).to_csv(val_csv_path, index=True)
         
         # Save test data
         test_data = {
             "text": ds["test"]["text"],
-            "label": ds["test"]["label"]
+            "label": ds["test"]["label"],
+            "label_name": [label_names[label] for label in ds["test"]["label"]]
         }
-        pd.DataFrame(test_data).to_csv(test_csv_path, index=False)
-        
-        # Save labels
-        labels_data = {"Index": range(len(ds["train"].features["label"].names)),
-                "Labels": ds["train"].features["label"].names}
-        pd.DataFrame(labels_data).to_csv(labels_csv_path, index=False)
+        pd.DataFrame(test_data).to_csv(test_csv_path, index=True)
     
-    train_df = pd.read_csv(train_csv_path)
-    val_df = pd.read_csv(val_csv_path)
-    test_df = pd.read_csv(test_csv_path)
-    labels_df = pd.read_csv(labels_csv_path)
+    train_df = pd.read_csv(train_csv_path, index_col=0)
+    val_df = pd.read_csv(val_csv_path, index_col=0)
+    test_df = pd.read_csv(test_csv_path, index_col=0)
     
-    return {
-        "train": train_df,
-        "val": val_df,
-        "test": test_df,
-        "labels": labels_df
-    }
+    return train_df, val_df, test_df

@@ -1,0 +1,26 @@
+Accuracy Score: 0.8605
+F1-Score: 0.8612
+Precision: 0.8639
+Recall: 0.8605
+
+Classification Report:
+              precision    recall  f1-score   support
+
+     sadness       0.88      0.91      0.90       581
+       anger       0.89      0.87      0.88       695
+        love       0.72      0.77      0.75       159
+    surprise       0.91      0.83      0.87       275
+        fear       0.84      0.79      0.82       224
+         joy       0.65      0.85      0.74        66
+
+    accuracy                           0.86      2000
+   macro avg       0.82      0.84      0.82      2000
+weighted avg       0.86      0.86      0.86      2000
+
+Confusion Matrix:
+[531, 22, 2, 10, 16, 0]
+[26, 605, 43, 7, 7, 7]
+[10, 21, 123, 3, 1, 1]
+[19, 18, 1, 229, 8, 0]
+[13, 7, 1, 4, 177, 22]
+[4, 4, 1, 0, 1, 56]

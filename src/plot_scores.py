@@ -2,8 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
 def plot_scores(results, label):
-    # Create subplots for loss and accuracy
-    _, axes = plt.subplots(1, 2, figsize=(10, 5))  # Adjusted size for better clarity
+    _, axes = plt.subplots(1, 2, figsize=(6, 3))
 
     epochs = range(1, results["num_epochs"] + 1)
 

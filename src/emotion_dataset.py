@@ -7,7 +7,7 @@ class EmotionDataset(Dataset):
         self.labels = labels
 
     def __len__(self):
-        return len(self.data)
+        return len(self.data) # return number of samples
 
     def __getitem__(self, idx):
-        return torch.LongTensor(self.data[idx]), torch.tensor(self.labels[idx], dtype=torch.long)
+        return torch.LongTensor(self.data[idx]), torch.tensor(self.labels[idx], dtype=torch.long) # return sample and label

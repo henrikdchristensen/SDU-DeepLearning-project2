@@ -1,6 +1,7 @@
 import os
 import time
 import numpy as np
+from collections import Counter
 
 from torch import nn
 import torch
@@ -8,19 +9,18 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torchinfo import summary
 
-from sklearn.metrics import (
-    accuracy_score,
-    f1_score,
-    precision_score,
-    recall_score,
-    classification_report,
-    confusion_matrix,
-)
+from metrics import compute_metrics, print_metrics, save_metrics
+
+def log_undefined(predicted_labels, labels):
+    counts = Counter(predicted_labels)
+    for idx, label in enumerate(labels):
+        if counts[idx] == 0:
+            print(f"Warning: No predictions for label '{label}' (index {idx}).")
 
 
 def calculate_accuracy(outputs, targets):
-    _, predicted = torch.max(outputs, dim=1)  # Get the index of the highest score (predicted label)
-    correct = (predicted == targets).sum().item()  # Count the number of correct predictions
+    _, predicted = torch.max(outputs, dim=1)  # get index of highest score (predicted label)
+    correct = (predicted == targets).sum().item()  # count number of correct predictions
     return correct
 
 def train_model(
@@ -28,7 +28,7 @@ def train_model(
     model,
     train_loader,
     val_loader,
-    label_mapping,
+    label_map,
     device,
     optimizer_type="Adam",
     learning_rate=0.001,
@@ -148,52 +148,31 @@ def train_model(
             f"Val Loss: {val_losses[-1]:.3f} (acc. {val_accuracies[-1]:.1f}%) | Time: {epoch_duration}s"
         )
 
+    # Log undefined predictions
+    log_undefined(all_predicted_labels, label_map.values())
+    
+    # Total training time
     total_training_time = round(time.time() - total_start_time)
-    print(f"Total Training Time: {total_training_time}s")
+    print(f"Total Training Time: {total_training_time}s\n")
     
     # Save model summary and metrics
     os.makedirs("models", exist_ok=True)
     with open(f"models/{label}.txt", "w") as f:
-        model_summary = summary(model, verbose=0)
-        f.write(str(model_summary))
+        f.write(str(summary(model, verbose=0)))
     
     # Convert to NumPy arrays
     all_true_labels = np.array(all_true_labels)
     all_predicted_labels = np.array(all_predicted_labels)
 
     # Compute metrics
-    accuracy = accuracy_score(all_true_labels, all_predicted_labels)
-    f1 = f1_score(all_true_labels, all_predicted_labels, average='weighted')
-    precision = precision_score(all_true_labels, all_predicted_labels, average='weighted')
-    recall = recall_score(all_true_labels, all_predicted_labels, average='weighted')
-    class_report = classification_report(all_true_labels, all_predicted_labels, target_names=list(label_mapping.values()))
-    conf_matrix = confusion_matrix(all_true_labels, all_predicted_labels)
-
-    # Print metrics
-    print(f"\nAccuracy Score: {accuracy:.4f}")
-    print(f"F1-Score: {f1:.4f}")
-    print(f"Precision: {precision:.4f}")
-    print(f"Recall: {recall:.4f}")
-    print("\nClassification Report:")
-    print(class_report)
-    print("Confusion Matrix:")
-    print(conf_matrix)
-
-    # Save metrics to files
-    os.makedirs("results", exist_ok=True)
-    with open(f"results/{label}_metrics.txt", "w") as f:
-        f.write(f"Accuracy Score: {accuracy:.4f}")
-        f.write(f"F1-Score: {f1:.4f}")
-        f.write(f"Precision: {precision:.4f}")
-        f.write(f"Recall: {recall:.4f}\n\n")
-        f.write("Classification Report:\n")
-        f.write(class_report + "\n")
-        f.write("Confusion Matrix:\n")
-        f.write(str(conf_matrix) + "\n")
+    metrics = compute_metrics(all_true_labels, all_predicted_labels, label_map.values())
+    print_metrics(metrics)
+    save_metrics(label, metrics)
 
     # Save model state
     torch.save(model.state_dict(), f"models/{label}.pth")
 
+    # Return training history
     return {
         "num_epochs": num_epochs,
         "train_losses": train_losses,

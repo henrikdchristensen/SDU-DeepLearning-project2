@@ -1,0 +1,65 @@
+% % LLNCS macro package for Springer Computer Science proceedings;
+% Version 2.21 of 2022/01/12
+%
+\documentclass[runningheads]{llncs}
+%
+\usepackage[T1]{fontenc}
+% T1 fonts will be used to generate the final print and online PDFs,
+% so please use T1 fonts in your manuscript whenever possible.
+% Other font encondings may result in incorrect characters.
+%
+
+\usepackage{amsmath}
+\usepackage{todonotes}
+\usepackage{pdfpages}
+\usepackage{needspace}
+
+\usepackage[left=2cm,
+            right=2cm,
+            top=2cm,
+            bottom=2cm]{geometry}
+
+\usepackage{graphicx, color, float, subfig}
+\captionsetup{font=small,labelfont=bf,labelsep=period,skip=5pt}
+\captionsetup[subfloat]{font=scriptsize,labelfont=bf,skip=5pt}
+
+%
+\usepackage{hyperref}
+\renewcommand\UrlFont{\color{blue}\rmfamily}
+\urlstyle{rm}
+%
+
+\begin{document}
+\title{\fontsize{12}{12}\selectfont Project 2 - Emotion}
+\titlerunning{Project 2}
+%
+\author{Henrik Daniel Christensen\orcidID{hench13@student.sdu.dk} \\Frode Engtoft Johansen\orcidID{fjoha21@student.sdu.dk}}
+\authorrunning{Christensen, Johansen} % first names are abbreviated in the running head.
+%
+\institute{DM873: Deep Learning\\University of Southern Denmark, SDU\\\textit{Department of Mathematics and Computer Science}}
+%
+\maketitle % typeset the header of the contribution
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{sections/1_introduction}
+\input{sections/2_label_distribution}
+\input{sections/3_tokenizing_vocabulary}
+\input{sections/4_model_1}
+\input{sections/5_model_2}
+\input{sections/6_analysis_and_final_prediction}
+\input{sections/7_pretrained_model}
+\input{sections/8_conclusion}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Appendices
+\newpage
+\appendix
+\input{appendices/a_code}
+\input{appendices/b_notebook}
+
+% \bibliographystyle{base/splncs04}
+% \newpage
+% \bibliography{base/references}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

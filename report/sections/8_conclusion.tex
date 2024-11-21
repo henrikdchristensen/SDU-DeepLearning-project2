@@ -1,0 +1,18 @@
+\section{Conclusion}
+% The model we ended up with was a convolutional neural network with 5 convolutional layers that extracted 512 feature maps, and with 3 fully connected layers. We perform several different types of data augmentation on the pictures including horizontal flipping, color jitter, and rotation having in total $\sim 21 million$ parameters. We ended up with a model that has 91.5\% test accuracy. The pretrained model AlexNet has a test accuracy of 93.5\%. Our result is pretty good, especially since the pretrained model had a lot more training data than we did, but at the same time it recognises a lot more classes than just cats and dogs. It is worth noticing that some of the pictures are very hard to classify, like dog.1335 and dog.1395 in the test set.
+
+% Overall we are satisfied with our result but it could have been improved. First of all more training data would very likely improve the model a lot. In some of the pictures its very hard to see whether its a cat or a dog and its doubtful that the model would learn anything from the picture, so removing those pictures from the dataset would potentially help the model learn more meaningful features and also train faster. We could have run epochs until the model began overfitting and then stopped at that point. If time was not a factor this is probably what we would have done. We could have also experimented more with the different parameters like learning rate and weight decay. We could have tried even more data augmentations to see what works best. We only rotate the pictures up to 25 degrees, which means that the model as an example would have a hard time recognising pictures of animals upside down.
+
+
+% \subsection{Individual Contributions}
+% \begin{table}[H]
+%     \centering
+%     \begin{tabular}{|l|p{5cm}|p{5cm}|}
+%     \hline
+%                     & \textbf{Henrik Daniel Christensen} & \textbf{Frode Engtoft Johansen} \\ \hline
+%     \textbf{Code}   & - Base model \newline - Data Augmentation \newline - Regularization \newline - Pre-trained & - Base model\\ \hline
+%     \textbf{Report} & - Introduction \newline - Explorative Analysis \newline - Base Model \newline - Regularization \newline - Prediction \newline - Pretrained Model \newline - Conclusion & - Base Model  \newline - Regularization \newline - Conclusion \\ \hline
+%     \end{tabular}
+%     \caption{Individual contributions.}
+%     \label{tab:individual_contributions}
+% \end{table}
