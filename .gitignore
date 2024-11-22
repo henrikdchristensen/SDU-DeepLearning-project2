@@ -4,3 +4,15 @@ src/missing_words.txt
 src/results/checkpoint*
 src/tmp_trainer
 src/models/roberta-base
+
+## LaTeX to ignore ##
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.synctex.gz(busy)
+*.synctex(busy).gz
