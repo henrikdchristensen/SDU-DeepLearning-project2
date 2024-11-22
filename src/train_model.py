@@ -9,6 +9,8 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torchinfo import summary
 
+from sklearn.metrics import accuracy_score, f1_score
+
 from metrics import compute_metrics, print_metrics, save_metrics
 
 def log_undefined(predicted_labels, labels):
@@ -18,10 +20,26 @@ def log_undefined(predicted_labels, labels):
             print(f"Warning: No predictions for label '{label}' (index {idx}).")
 
 
-def calculate_accuracy(outputs, targets):
-    _, predicted = torch.max(outputs, dim=1)  # get index of highest score (predicted label)
-    correct = (predicted == targets).sum().item()  # count number of correct predictions
-    return correct
+import os
+import time
+import numpy as np
+from collections import Counter
+from torch import nn
+import torch
+import torch.optim as optim
+import torch.nn.functional as F
+from torchinfo import summary
+from sklearn.metrics import accuracy_score, f1_score
+from metrics import compute_metrics, print_metrics, save_metrics
+
+
+def log_undefined(predicted_labels, labels):
+    """Logs warnings for labels that are not predicted."""
+    counts = Counter(predicted_labels)
+    for idx, label in enumerate(labels):
+        if counts[idx] == 0:
+            print(f"Warning: No predictions for label '{label}' (index {idx}).")
+
 
 def train_model(
     label,
@@ -39,7 +57,8 @@ def train_model(
     reg_type=None,
     reg_lambda=0.0,
     num_epochs=30
-):  
+):
+    """Trains a PyTorch model and logs metrics for each epoch."""
     # Move the model to the device
     model = model.to(device)
 
@@ -63,12 +82,13 @@ def train_model(
         raise ValueError(f"Unknown optimizer type: {optimizer_type}")
 
     # Learning rate scheduler
+    scheduler = None
     if step_size is not None and gamma is not None:
         scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)
 
     # Metrics storage
-    train_losses, train_accuracies = [], []
-    val_losses, val_accuracies = [], []
+    train_losses, train_accuracies, train_f1_scores = [], [], []
+    val_losses, val_accuracies, val_f1_scores = [], [], []
 
     total_start_time = time.time()
 
@@ -77,7 +97,11 @@ def train_model(
 
         # Training phase
         model.train()
-        total_train_loss, train_correct, total_train_samples = 0.0, 0, 0
+        
+        epoch_total_train_loss = 0.0
+        epoch_total_train_samples = 0
+        epoch_train_true_labels = []
+        epoch_train_predicted_labels = []
 
         for inputs, targets in train_loader:
             inputs, targets = inputs.to(device), targets.to(device)
@@ -97,75 +121,77 @@ def train_model(
             loss.backward()
             optimizer.step()
 
-            total_train_loss += loss.item() * inputs.size(0)
-            train_correct += calculate_accuracy(outputs, targets)
-            total_train_samples += inputs.size(0)
+            epoch_total_train_loss += loss.item() * inputs.size(0)
+            epoch_total_train_samples += inputs.size(0)
 
-        # Update learning rate scheduler
-        if step_size and gamma:
-            scheduler.step()
+            # Collect true labels and predictions
+            _, predicted = torch.max(outputs, dim=1)
+            epoch_train_true_labels.extend(targets.cpu().numpy())
+            epoch_train_predicted_labels.extend(predicted.cpu().numpy())
 
-        # Record training metrics
-        train_loss = total_train_loss / total_train_samples
-        train_accuracy = 100 * train_correct / total_train_samples
-        train_losses.append(round(train_loss, 4))
-        train_accuracies.append(round(train_accuracy, 2))
+        # Calculate training metrics
+        avg_epoch_train_loss = round(epoch_total_train_loss / epoch_total_train_samples, 4)
+        epoch_train_accuracy = round(accuracy_score(epoch_train_true_labels, epoch_train_predicted_labels), 4)
+        epoch_train_f1 = round(f1_score(epoch_train_true_labels, epoch_train_predicted_labels, average='weighted'), 4)
+        train_losses.append(avg_epoch_train_loss)
+        train_accuracies.append(epoch_train_accuracy)
+        train_f1_scores.append(epoch_train_f1)
 
         # Validation phase
         model.eval()
-        total_val_loss, val_correct, total_val_samples = 0.0, 0, 0
-
-        # Store true labels and predictions for the entire validation set
-        all_true_labels = []
-        all_predicted_labels = []
+        
+        epoch_total_val_loss = 0.0
+        epoch_total_val_samples = 0
+        all_val_true_labels = []
+        all_val_predicted_labels = []
 
         with torch.no_grad():
             for inputs, targets in val_loader:
                 inputs, targets = inputs.to(device), targets.to(device)
                 outputs = model(inputs)
 
-                probabilities = F.softmax(outputs, dim=1)
-                confidences, predicted = torch.max(probabilities, dim=1)
+                avg_epoch_val_loss = criterion(outputs, targets)
+                epoch_total_val_loss += avg_epoch_val_loss.item() * inputs.size(0)
+                epoch_total_val_samples += inputs.size(0)
 
-                # Append true and predicted labels
-                all_true_labels.extend(targets.cpu().numpy())
-                all_predicted_labels.extend(predicted.cpu().numpy())
-                
-                val_loss = criterion(outputs, targets)
-                total_val_loss += val_loss.item() * inputs.size(0)
-                val_correct += calculate_accuracy(outputs, targets)
-                total_val_samples += inputs.size(0)
+                # Collect true labels and predictions
+                _, predicted = torch.max(outputs, dim=1)
+                all_val_true_labels.extend(targets.cpu().numpy())
+                all_val_predicted_labels.extend(predicted.cpu().numpy())
 
-        # Record validation metrics
-        val_loss = total_val_loss / total_val_samples
-        val_accuracy = 100 * val_correct / total_val_samples
-        val_losses.append(round(val_loss, 4))
-        val_accuracies.append(round(val_accuracy, 2))
+        # Calculate validation metrics
+        avg_epoch_val_loss = round(epoch_total_val_loss / epoch_total_val_samples, 4)
+        epoch_val_accuracy = round(accuracy_score(all_val_true_labels, all_val_predicted_labels), 4)
+        epoch_val_f1 = round(f1_score(all_val_true_labels, all_val_predicted_labels, average='weighted'), 4)
+        val_losses.append(avg_epoch_val_loss)
+        val_accuracies.append(epoch_val_accuracy)
+        val_f1_scores.append(epoch_val_f1)
+
+        # Update learning rate
+        if scheduler:
+            scheduler.step()
 
         epoch_duration = round(time.time() - start_time)
         print(
-            f"Epoch {epoch+1}/{num_epochs} | Train Loss: {train_losses[-1]:.3f} (acc. {train_accuracies[-1]:.1f}%) | "
-            f"Val Loss: {val_losses[-1]:.3f} (acc. {val_accuracies[-1]:.1f}%) | Time: {epoch_duration}s"
+            f"Epoch {epoch + 1}/{num_epochs} ({epoch_duration}s) | "
+            f"Train: loss {avg_epoch_train_loss}, acc {epoch_train_accuracy*100:.2f}%, f1 {epoch_train_f1*100:.2f}% | "
+            f"Val: loss {avg_epoch_val_loss}, acc {epoch_val_accuracy*100:.2f}%, f1 {epoch_val_f1*100:.2f}%"
         )
 
     # Log undefined predictions
-    log_undefined(all_predicted_labels, label_map.values())
-    
+    log_undefined(all_val_predicted_labels, label_map.values())
+
     # Total training time
     total_training_time = round(time.time() - total_start_time)
     print(f"Total Training Time: {total_training_time}s\n")
-    
+
     # Save model summary and metrics
     os.makedirs("models", exist_ok=True)
     with open(f"models/{label}.txt", "w") as f:
         f.write(str(summary(model, verbose=0)))
-    
-    # Convert to NumPy arrays
-    all_true_labels = np.array(all_true_labels)
-    all_predicted_labels = np.array(all_predicted_labels)
 
-    # Compute metrics
-    metrics = compute_metrics(all_true_labels, all_predicted_labels, label_map.values())
+    # Compute and save metrics
+    metrics = compute_metrics(all_val_true_labels, all_val_predicted_labels, label_map.values())
     print_metrics(metrics)
     save_metrics(label, metrics)
 
@@ -177,6 +203,9 @@ def train_model(
         "num_epochs": num_epochs,
         "train_losses": train_losses,
         "train_accuracies": train_accuracies,
+        "train_f1_scores": train_f1_scores,
         "val_losses": val_losses,
         "val_accuracies": val_accuracies,
+        "val_f1_scores": val_f1_scores,
     }
+
