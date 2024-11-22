@@ -1,5 +1,9 @@
 \section{Tokenizing and Vocabulary}
-Next, we tokenize the text data for that we created a custom RegexpTokenizer which tokenizes the text by only allowing words, numbers and some special characters. Even though the dataset is rather cleaned. Keeping exclasion marks and question marks can be useful for sentiment analysis. To see which words are most common in the dataset, we plot a WordCloud, which can be seen in Figure \ref{fig:wordcloud}.
+Next, we tokenize the text data for that we created a custom RegexpTokenizer which tokenizes the text by only allowing words, numbers and some special characters. Even though the dataset is rather cleaned. We choose to keep exclamation marks and question marks as they potentially could add value for sentiment analysis.
+
+Next, we check the top 10 most common words in the dataset. Many stopwords are present in the dataset also some words that are not relevant for sentiment analysis. Also, many words have similar meanings, e.g. 'feel' and 'feeling', therefore we also stem the words.
+
+To see which words are most common in the dataset, we plot a WordCloud, which can be seen in Figure \ref{fig:wordcloud}.
 \begin{figure}[H]
     \vspace*{0.7cm}
     \centering
