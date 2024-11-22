@@ -4,6 +4,7 @@ src/missing_words.txt
 src/results/checkpoint*
 src/tmp_trainer
 src/models/roberta-base
+src/results/word_frequencies.csv
 
 ## LaTeX to ignore ##
 *.aux
@@ -16,3 +17,4 @@ src/models/roberta-base
 *.fls
 *.synctex.gz(busy)
 *.synctex(busy).gz
+
