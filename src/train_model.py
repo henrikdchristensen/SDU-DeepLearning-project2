@@ -187,7 +187,7 @@ def train_model(
 
     # Save model summary and metrics
     os.makedirs("models", exist_ok=True)
-    with open(f"models/{label}.txt", "w") as f:
+    with open(f"models/{label}.txt", "w", encoding="utf-8") as f:
         f.write(str(summary(model, verbose=0)))
 
     # Compute and save metrics
