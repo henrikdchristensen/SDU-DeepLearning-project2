@@ -6,7 +6,7 @@ from collections import Counter
 from torch import nn
 import torch
 import torch.optim as optim
-import torch.nn.functional as F
+from torch.nn.utils import clip_grad_norm_
 from torchinfo import summary
 
 from sklearn.metrics import accuracy_score, f1_score
@@ -18,19 +18,6 @@ def log_undefined(predicted_labels, labels):
     for idx, label in enumerate(labels):
         if counts[idx] == 0:
             print(f"Warning: No predictions for label '{label}' (index {idx}).")
-
-
-import os
-import time
-import numpy as np
-from collections import Counter
-from torch import nn
-import torch
-import torch.optim as optim
-import torch.nn.functional as F
-from torchinfo import summary
-from sklearn.metrics import accuracy_score, f1_score
-from metrics import compute_metrics, print_metrics, save_metrics
 
 
 def log_undefined(predicted_labels, labels):
@@ -56,7 +43,8 @@ def train_model(
     gamma=0.5,
     reg_type=None,
     reg_lambda=0.0,
-    num_epochs=30
+    num_epochs=30,
+    grad_clip=0.0,
 ):
     """Trains a PyTorch model and logs metrics for each epoch."""
     # Move the model to the device
@@ -111,14 +99,19 @@ def train_model(
             loss = criterion(outputs, targets)
 
             # Apply regularization
-            if reg_type == "L1":
-                l1_norm = sum(param.abs().sum() for param in model.parameters())
-                loss += reg_lambda * l1_norm
-            elif reg_type == "L2":
-                l2_norm = sum(param.pow(2).sum() for param in model.parameters())
-                loss += reg_lambda * l2_norm
+            if reg_lambda > 0.0 and reg_type is not None:
+                if reg_type == "L1":
+                    l1_norm = sum(param.abs().sum() for param in model.parameters())
+                    loss += reg_lambda * l1_norm
+                elif reg_type == "L2":
+                    l2_norm = sum(param.pow(2).sum() for param in model.parameters())
+                    loss += reg_lambda * l2_norm
 
             loss.backward()
+            
+            if grad_clip > 0:
+                clip_grad_norm_(model.parameters(), grad_clip)
+            
             optimizer.step()
 
             epoch_total_train_loss += loss.item() * inputs.size(0)
