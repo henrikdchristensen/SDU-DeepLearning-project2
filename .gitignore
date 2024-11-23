@@ -3,8 +3,10 @@ src/data
 src/missing_words.txt
 src/results/checkpoint*
 src/tmp_trainer
-src/models/roberta-base
+src/models/distilbert_finetuned
 src/results/word_frequencies.csv
+src/models/model_*
+src/results/model_*
 
 ## LaTeX to ignore ##
 *.aux
