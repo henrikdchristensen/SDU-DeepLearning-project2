@@ -51,7 +51,11 @@ class TransformerBlock(nn.Module):
             self.mlp = nn.Sequential(
                 nn.Linear(d_model, mlp_factor * d_model),
                 nn.SiLU(),  # Swish activation function, f(x) = x * sigmoid(x)
-                nn.Linear(mlp_factor * d_model, d_model)
+                nn.Linear(mlp_factor * d_model, d_model),
+                nn.SiLU(),
+                nn.Linear(d_model, mlp_factor * d_model),
+                nn.SiLU(),
+                nn.Linear(d_model, mlp_factor * d_model),
             )
     def forward(self, x):
         # Residual connections and pre-layernorm

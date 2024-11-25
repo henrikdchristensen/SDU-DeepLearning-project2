@@ -1,0 +1,46 @@
+======================================================================
+Layer (type:depth-idx)                        Param #
+======================================================================
+TransformerClassifier                         --
+├─Embedding: 1-1                              1,323,008
+├─Sequential: 1-2                             --
+│    └─TransformerBlock: 2-1                  --
+│    │    └─LayerNorm: 3-1                    256
+│    │    └─MultiHeadSelfAttention: 3-2       395,392
+│    │    └─LayerNorm: 3-3                    256
+│    │    └─Sequential: 3-4                   131,712
+│    └─TransformerBlock: 2-2                  --
+│    │    └─LayerNorm: 3-5                    256
+│    │    └─MultiHeadSelfAttention: 3-6       395,392
+│    │    └─LayerNorm: 3-7                    256
+│    │    └─Sequential: 3-8                   131,712
+│    └─TransformerBlock: 2-3                  --
+│    │    └─LayerNorm: 3-9                    256
+│    │    └─MultiHeadSelfAttention: 3-10      395,392
+│    │    └─LayerNorm: 3-11                   256
+│    │    └─Sequential: 3-12                  131,712
+│    └─TransformerBlock: 2-4                  --
+│    │    └─LayerNorm: 3-13                   256
+│    │    └─MultiHeadSelfAttention: 3-14      395,392
+│    │    └─LayerNorm: 3-15                   256
+│    │    └─Sequential: 3-16                  131,712
+│    └─TransformerBlock: 2-5                  --
+│    │    └─LayerNorm: 3-17                   256
+│    │    └─MultiHeadSelfAttention: 3-18      395,392
+│    │    └─LayerNorm: 3-19                   256
+│    │    └─Sequential: 3-20                  131,712
+│    └─TransformerBlock: 2-6                  --
+│    │    └─LayerNorm: 3-21                   256
+│    │    └─MultiHeadSelfAttention: 3-22      395,392
+│    │    └─LayerNorm: 3-23                   256
+│    │    └─Sequential: 3-24                  131,712
+├─LayerNorm: 1-3                              256
+├─Sequential: 1-4                             --
+│    └─Linear: 2-7                            16,512
+│    └─SiLU: 2-8                              --
+│    └─Linear: 2-9                            774
+======================================================================
+Total params: 4,506,246
+Trainable params: 4,506,246
+Non-trainable params: 0
+======================================================================

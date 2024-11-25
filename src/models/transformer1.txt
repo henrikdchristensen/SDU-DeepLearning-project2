@@ -2,45 +2,75 @@
 Layer (type:depth-idx)                        Param #
 ======================================================================
 TransformerClassifier                         --
-├─Embedding: 1-1                              2,646,016
+├─Embedding: 1-1                              1,323,008
 ├─Sequential: 1-2                             --
 │    └─TransformerBlock: 2-1                  --
-│    │    └─LayerNorm: 3-1                    512
-│    │    └─MultiHeadSelfAttention: 3-2       1,314,048
-│    │    └─LayerNorm: 3-3                    512
-│    │    └─Sequential: 3-4                   525,568
+│    │    └─LayerNorm: 3-1                    256
+│    │    └─MultiHeadSelfAttention: 3-2       395,392
+│    │    └─LayerNorm: 3-3                    256
+│    │    └─Sequential: 3-4                   131,712
 │    └─TransformerBlock: 2-2                  --
-│    │    └─LayerNorm: 3-5                    512
-│    │    └─MultiHeadSelfAttention: 3-6       1,314,048
-│    │    └─LayerNorm: 3-7                    512
-│    │    └─Sequential: 3-8                   525,568
+│    │    └─LayerNorm: 3-5                    256
+│    │    └─MultiHeadSelfAttention: 3-6       395,392
+│    │    └─LayerNorm: 3-7                    256
+│    │    └─Sequential: 3-8                   131,712
 │    └─TransformerBlock: 2-3                  --
-│    │    └─LayerNorm: 3-9                    512
-│    │    └─MultiHeadSelfAttention: 3-10      1,314,048
-│    │    └─LayerNorm: 3-11                   512
-│    │    └─Sequential: 3-12                  525,568
+│    │    └─LayerNorm: 3-9                    256
+│    │    └─MultiHeadSelfAttention: 3-10      395,392
+│    │    └─LayerNorm: 3-11                   256
+│    │    └─Sequential: 3-12                  131,712
 │    └─TransformerBlock: 2-4                  --
-│    │    └─LayerNorm: 3-13                   512
-│    │    └─MultiHeadSelfAttention: 3-14      1,314,048
-│    │    └─LayerNorm: 3-15                   512
-│    │    └─Sequential: 3-16                  525,568
+│    │    └─LayerNorm: 3-13                   256
+│    │    └─MultiHeadSelfAttention: 3-14      395,392
+│    │    └─LayerNorm: 3-15                   256
+│    │    └─Sequential: 3-16                  131,712
 │    └─TransformerBlock: 2-5                  --
-│    │    └─LayerNorm: 3-17                   512
-│    │    └─MultiHeadSelfAttention: 3-18      1,314,048
-│    │    └─LayerNorm: 3-19                   512
-│    │    └─Sequential: 3-20                  525,568
+│    │    └─LayerNorm: 3-17                   256
+│    │    └─MultiHeadSelfAttention: 3-18      395,392
+│    │    └─LayerNorm: 3-19                   256
+│    │    └─Sequential: 3-20                  131,712
 │    └─TransformerBlock: 2-6                  --
-│    │    └─LayerNorm: 3-21                   512
-│    │    └─MultiHeadSelfAttention: 3-22      1,314,048
-│    │    └─LayerNorm: 3-23                   512
-│    │    └─Sequential: 3-24                  525,568
-├─LayerNorm: 1-3                              512
+│    │    └─LayerNorm: 3-21                   256
+│    │    └─MultiHeadSelfAttention: 3-22      395,392
+│    │    └─LayerNorm: 3-23                   256
+│    │    └─Sequential: 3-24                  131,712
+│    └─TransformerBlock: 2-7                  --
+│    │    └─LayerNorm: 3-25                   256
+│    │    └─MultiHeadSelfAttention: 3-26      395,392
+│    │    └─LayerNorm: 3-27                   256
+│    │    └─Sequential: 3-28                  131,712
+│    └─TransformerBlock: 2-8                  --
+│    │    └─LayerNorm: 3-29                   256
+│    │    └─MultiHeadSelfAttention: 3-30      395,392
+│    │    └─LayerNorm: 3-31                   256
+│    │    └─Sequential: 3-32                  131,712
+│    └─TransformerBlock: 2-9                  --
+│    │    └─LayerNorm: 3-33                   256
+│    │    └─MultiHeadSelfAttention: 3-34      395,392
+│    │    └─LayerNorm: 3-35                   256
+│    │    └─Sequential: 3-36                  131,712
+│    └─TransformerBlock: 2-10                 --
+│    │    └─LayerNorm: 3-37                   256
+│    │    └─MultiHeadSelfAttention: 3-38      395,392
+│    │    └─LayerNorm: 3-39                   256
+│    │    └─Sequential: 3-40                  131,712
+│    └─TransformerBlock: 2-11                 --
+│    │    └─LayerNorm: 3-41                   256
+│    │    └─MultiHeadSelfAttention: 3-42      395,392
+│    │    └─LayerNorm: 3-43                   256
+│    │    └─Sequential: 3-44                  131,712
+│    └─TransformerBlock: 2-12                 --
+│    │    └─LayerNorm: 3-45                   256
+│    │    └─MultiHeadSelfAttention: 3-46      395,392
+│    │    └─LayerNorm: 3-47                   256
+│    │    └─Sequential: 3-48                  131,712
+├─LayerNorm: 1-3                              256
 ├─Sequential: 1-4                             --
-│    └─Linear: 2-7                            65,792
-│    └─SiLU: 2-8                              --
-│    └─Linear: 2-9                            1,542
+│    └─Linear: 2-13                           16,512
+│    └─SiLU: 2-14                             --
+│    └─Linear: 2-15                           774
 ======================================================================
-Total params: 13,757,702
-Trainable params: 13,757,702
+Total params: 7,671,942
+Trainable params: 7,671,942
 Non-trainable params: 0
 ======================================================================
