@@ -1,4 +1,4 @@
-\section{Label Distribution}
+\section{Label Distribution}\label{sec:label_distribution}
 We started by analyzing the distribution of the labels in the dataset, see Figure \ref{fig:label_dist}.
 \begin{figure}[H]
     \vspace*{0.7cm}
@@ -8,6 +8,6 @@ We started by analyzing the distribution of the labels in the dataset, see Figur
     \label{fig:label_dist}
     \vspace*{0.7cm}
 \end{figure}
-From the figure, it is clear that the dataset is very unbalanced in the training set, with the majority of the tweets being labeled as joy or sadness. However, the validation set have more and less the same distribution of labels. Therefore, we expect the test set to have a similar distribution.
+From the figure, it is evident that the dataset is highly imbalanced, with the majority of tweets labeled as either joy or sadness. However, the validation set exhibits a roughly similar distribution of labels, suggesting that the test set is likely to follow a comparable pattern.
 
-Of course, this unbalance in the training set will have an impact on the performance of the model, as sentences labeled as joy will be more less likely to be classified correctly. This is something we will have to take into account when evaluating the performance of the model.
+This imbalance in the training data is expected to impact the model's performance, particularly for less represented labels, as sentences labeled with joy are less likely to be classified correctly. This challenge must be carefully considered when evaluating the model's performance and interpreting the results.

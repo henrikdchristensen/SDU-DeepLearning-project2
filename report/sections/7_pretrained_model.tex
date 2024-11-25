@@ -1,16 +1,24 @@
 \section{Pretrained Model (DistilBERT)}
-To see how good our model performs compared to a well-known model, we used the pretrained DistilBERT base model (uncased) from Hugging Face. The model is trained on a dataset containing 11,038 books and English Wikipedia having a vocabulary size of 30,000 words.
+To evaluate how our model compares to a larger pretrained model, we utilized the DistilBERT base model (uncased) from Hugging Face. DistilBERT is a distilled version of BERT, pretrained on a large corpus comprising 11,038 books and the English Wikipedia. It features a vocabulary size of 30,000 tokens and contains approximately 67 million parameters, making it significantly larger and more complex than our models. To adapt DistilBERT to our sentiment analysis task, we fine-tuned the model for 5 epochs using a small initial learning rate of $5\times10^{-6}$. This low learning rate ensures stable and effective fine-tuning of the pretrained weights without overfitting to our dataset. The performance of DistilBERT on our task is summarized in Table \ref{tab:distilbert_model}.
 
-To fit the model to our task, we trained the model for 5 epochs using a learning rate of $5e-6$. The performance of the model can be seen in Table \ref{tab:distilbert_model}.
 \begin{table}[H]
     \vspace*{-0.5cm}
     \centering
-    \begin{tabular}{|c|c|}
-    \hline
-    Test Accuracy & Test F1-Score \\ \hline
-    88.9\% & 88.7\% \\ \hline
+    \begin{tabular}{|l|c|c|c|}
+        \hline
+        Label        & Precision & Recall & F1-Score \\ \hline
+        sadness      & 0.92      & 0.93   & 0.92     \\ \hline
+        joy          & 0.90      & 0.92   & 0.91     \\ \hline
+        love         & 0.74      & 0.71   & 0.72     \\ \hline
+        anger        & 0.90      & 0.89   & 0.89     \\ \hline
+        fear         & 0.87      & 0.89   & 0.88     \\ \hline
+        surprise     & 0.82      & 0.61   & 0.70     \\ \hline\hline
+        accuracy     &           &        & 0.89     \\ \hline
+        weighted avg & 0.89      & 0.89   & 0.89     \\ \hline
     \end{tabular}
     \caption{DistilBERT model performance on test set.}
     \label{tab:distilbert_model}
     \vspace*{-0.8cm}
 \end{table}
+
+From the above results, we see that the pretrained model performs generally better than our two models. Notice that the performance on the less presents classes love and surprise is also lower as seen in the previous models.
