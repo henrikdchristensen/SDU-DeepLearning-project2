@@ -1,9 +1,11 @@
-\section{Tokenizing and Vocabulary}
-Next, we tokenize the text data for that we created a custom RegexpTokenizer which tokenizes the text by only allowing words, numbers and some special characters. Even though the dataset is rather cleaned. We choose to keep exclamation marks and question marks as they potentially could add value for sentiment analysis.
+\section{Preprocessing}
+To enable a machine learning model to process textual data effectively, it is essential to convert the text into numerical representations. The first step in this process is tokenizing the text, which involves splitting sentences into smaller units, such as words. For this task, we utilize a custom RegexpTokenizer from the NLTK library, which filters the text to retain only words, numbers, and a limited set of special characters. This ensures that irrelevant symbols are excluded while preserving the meaningful components of the text.
 
-Next, we check the top 10 most common words in the dataset. First of all, many stopwords are present in the dataset, these could add some value for sentiment analysis, but we expect them to be more noise than signal. Therefore, we remove the stopwords from the dataset. In addition, many words having similar meanings, e.g. 'feel' and 'feeling' are present, therefore these are also removed by stemming the words.
+Following tokenization, the text is further refined by removing stopwords and applying stemming. Stopwords, which are frequently used words such as "the," "is," and "and," are removed as they are unlikely to contribute significant value to sentiment analysis. This is particularly important when using a limited sequence length for input sentences, as it allows the model to focus on more informative features while reducing the size of the vocabulary. Consequently, the model learns fewer parameters, which can improve its generalization and efficiency.
 
-After text cleaning, we could visualize the common words in the sentences by using a WordCloud, see Figure \ref{fig:wordcloud}.
+In addition, we apply stemming using the PorterStemmer from the NLTK library, which reduces words to their base or root forms (e.g., "feeling" becomes "feel"). This process further reduces the vocabulary size by grouping inflected or derived word forms together, helping the model to recognize similar meanings and improve its performance.
+
+To better understand the text data after preprocessing, we visualize the most common words using a WordCloud, as shown in Figure \ref{fig:wordcloud}. This provides an intuitive way to analyze the prominent terms in the dataset and assess whether the preprocessing aligns with the goals of the sentiment analysis task.
 \begin{figure}[H]
     \vspace*{0.7cm}
     \centering
@@ -12,7 +14,7 @@ After text cleaning, we could visualize the common words in the sentences by usi
     \label{fig:wordcloud}
     \vspace*{0.7cm}
 \end{figure}
-As expected many emotional words are present in the vocabulary, e.g. 'love', 'friend', 'hate', 'never', 'go', etc. 
+As expected many emotional words are present in the vocabulary, e.g. 'love', 'friend', 'hate', 'never', 'go', etc.
 
 To be able to process the text data, we need to choose a maximum sentence length. A boxplot of the distribution of the lengths of the sequences can be seen in Figure \ref{fig:sequence_length}.
 \begin{figure}[H]
