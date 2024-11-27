@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import math
+import random
 # the self attention is just like described in deep learning by Bishop, so i will not change it.
 class SelfAttention(nn.Module):
     def __init__(self, d_model, d_key):
@@ -26,7 +27,6 @@ class MultiHeadSelfAttention(nn.Module):
         super().__init__()
         self.heads = nn.ModuleList([SelfAttention(d_model, d_key) for _ in range(n_heads)])
         # Down projection back to model dimension
-        # Alternatively, we could also split the input into n_heads and concatenate the output
         self.w_o = nn.Linear(n_heads * d_model, d_model)
     def forward(self, x):
         return self.w_o(torch.cat([h(x) for h in self.heads], dim=-1))
@@ -73,7 +73,10 @@ class TransformerClassifier(nn.Module):
         self.classifier = nn.Sequential(nn.Linear(d_model, d_model), nn.SiLU(), nn.Linear(d_model, n_classes))
 
     def sinusoidalPositionEncoding(self, input):
-        #create empty matrix
+        # delete 2 random tokens from sentence
+        indexesToKeep = random.sample(range(0, input.size(dim=1)), input.size(dim=1)-2)
+        input = input[:, indexesToKeep]
+        # create empty matrix
         r_n_matrix = torch.empty((input.size(dim=1), self.d_model))
         r_n_matrix = r_n_matrix.to(self.device)
         # fill all areas of empty matrix

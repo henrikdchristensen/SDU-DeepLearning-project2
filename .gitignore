@@ -7,6 +7,8 @@ src/models/distilbert_finetuned
 src/results/word_frequencies.csv
 src/models/model_*
 src/results/model_*
+src/models/transformer*
+src/results/transformer*
 
 ## LaTeX to ignore ##
 *.aux
