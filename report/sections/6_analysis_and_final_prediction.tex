@@ -1,25 +1,30 @@
 \section{Analysis and Final Prediction}
-% The reg\_4 model is now applied to the test set to evaluate its performance. The test accuracy is summarized in Table \ref{tab:prediction}.
+Of the two models, the performance of the recurrent neural network were better with an accuracy of 83\% to the transformer models accuracy of 81\%. Both architectures are good at predicting based on text, so its no big surprise that they are close in performance. 
 
-% \begin{table}[H]
-%     \centering
-%     \begin{tabular}{|c|c|}
-%         \hline
-%         \textbf{Test Accuracy using Reg4 model} \\ \hline
-%         91.5\% \\ \hline
-%     \end{tabular}
-%     \caption{Test Accuracy using Reg4 Model.}
-%     \label{tab:prediction}
-% \end{table}
+Since the transformer model is the worst performing, we decided to take a closer look at some failed classification cases to see why it performed as it did. These are the 7 sentences we looked at.
 
-% Some of the misclassified and correctly classified images are given in Figure \ref{fig:prediction}.
-% \begin{figure}[H]
-%     \vspace*{-0.7cm}
-%     \centering
-%     \includegraphics[width=1\textwidth]{figures/predict_images.png}
-%     \caption{Misclassified and correctly classified images.}
-%     \label{fig:prediction}
-%     \vspace*{-0.7cm}
-% \end{figure}
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5} % Adds space between rows
+    \setlength{\tabcolsep}{8pt} % Adjusts column spacing
+    
+    \begin{tabular}{c|p{8cm}|c|c|}
+    \hline 
+    \textbf{Number} & \textbf{Sentence} & \textbf{Transformer prediction} & \textbf{Actual classification} \\ \hline
+    1 & im updating my blog because i feel shitty & Joy & Sadness \\ \hline
+    2 & i never make her separate from me because i don t ever want her to feel like i m ashamed with her & Joy & Sadness \\ \hline
+    3 & i left with my bouquet of red and yellow tulips under my arm feeling slightly more optimistic than when i arrived & Sadness & Joy \\ \hline
+    4 & i cant walk into a shop anywhere where i do not feel uncomfortable & Joy & Fear \\ \hline
+    5 & i explain why i clung to a relationship with a boy who was in many ways immature and uncommitted despite the excitement i should have been feeling for getting accepted into the masters program at the university of virginia & Anger & Joy \\ \hline
+    6 & i jest i feel grumpy tired and pre menstrual which i probably am but then again its only been a week and im about as fit as a walrus on vacation for the summer & Joy & Anger \\ \hline
+    7 & i find myself in the odd position of feeling supportive of & Anger & Love \\ \hline
+    \end{tabular}
+    \caption{Sentence Classifications with Transformer prediction and Actual classification}
+    \label{tab:sentence_classifications}
+    \end{table}
 
-% From the misclassified images, we see that may some more data augmentation could be applied to improve the model's performance. For example, the cat that rotate its head by almost 90 degrees. Moreover, the model may be improved by adding more crop-scale augmentation.
+Looking at these sentences my intuition would be that the model looks at keywords to decide which category it belongs to. Some of the sentences lack any keywords that indicate what feeling they are associated with. The first sentence has a keyword 'shitty', but it might be a rare word in the training set. Sentence 1 also contains the word updating which is probably a positive word for the model, which is why it predicts joy. Sentence 6 contain the word 'vacation' which is probably why the model predicts joy for that sentence. This could indicate it is looking for keywords. If you were looking to deliberately make the model fail, we predict that missspellings, irony and figurative language would be some good techniques to do so.
+\\
+
+To confirm our suspicions we tried to edit some of the sentences to get them correctly classified.
+Changing sentence 1 to "im updating my blog because i feel sad" changed the classification to sadness which is the correct one. This indicates that keywords are important. On the other hand, changing sentence 5 to "i explain why i clung to a relationship with a boy who was in many ways despite the excitement i should have been feeling for getting accepted into the masters program at the university of virginia" did not change the prediction or even the confidence which is a big surprise since the only change in that sentence is removing "immature and uncommitted" which seems like the most negative words in that sentence, so maybe the model is less keyword focused than anticipated.\\

@@ -73,9 +73,6 @@ class TransformerClassifier(nn.Module):
         self.classifier = nn.Sequential(nn.Linear(d_model, d_model), nn.SiLU(), nn.Linear(d_model, n_classes))
 
     def sinusoidalPositionEncoding(self, input):
-        # delete 2 random tokens from sentence
-        indexesToKeep = random.sample(range(0, input.size(dim=1)), input.size(dim=1)-2)
-        input = input[:, indexesToKeep]
         # create empty matrix
         r_n_matrix = torch.empty((input.size(dim=1), self.d_model))
         r_n_matrix = r_n_matrix.to(self.device)
